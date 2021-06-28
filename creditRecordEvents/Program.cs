@@ -4,7 +4,7 @@ namespace creditRecordEvents
 {
     class Program
     {
-        static void Main(string[] args)
+        static void Main()
         {
             var creditRecordRepository = new CreditsRecordRepository();
 
@@ -73,7 +73,6 @@ namespace creditRecordEvents
                         }
                         break;
                 }
-                
                 creditRecordRepository.Save(creditRecord);
                 Console.ReadLine();
                 Console.WriteLine();

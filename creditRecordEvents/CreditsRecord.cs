@@ -21,7 +21,6 @@ namespace creditRecordEvents
         {
             CreditId = creditId;
         }
-
         
         public void AddCredit(int amount)
         {
@@ -31,22 +30,37 @@ namespace creditRecordEvents
         
         public void SpendCredit(int amount)
         {
-            if (amount > _currentCredit.Remaining)
+            try
             {
-                throw new InvalidDomainException("Sorry... You don't have enough credit");
+                if (amount > _currentCredit.Remaining)
+                {
+                    throw new Exception("Sorry... You don't have enough credit");
+                }
+                AddEvent(new CreditSpent(CreditId, amount, DateTime.UtcNow));
+
             }
-            
-            AddEvent(new CreditSpent(CreditId, amount, DateTime.UtcNow));
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+           
         }
 
         public void ExpireCredit(int amount, string reason)
         {
-            if (_currentCredit.Remaining + amount < 0)
+            try
             {
-                throw new InvalidDomainException("Credit cannot be negative");
+                if (_currentCredit.Remaining + amount < 0)
+                {
+                    throw new InvalidDomainException("Credit cannot be negative");
+                }
+                AddEvent(new CreditExpired(CreditId, amount, reason, DateTime.UtcNow));
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
             }
             
-            AddEvent(new CreditExpired(CreditId, amount, reason, DateTime.UtcNow));
         }
         
         private void Apply(CreditAdded evnt)
